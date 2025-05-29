@@ -1,0 +1,341 @@
++<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HPU :: Himachal Pradesh University :: UNIVERSITY ADMIN</title>
+
+    <script type="text/javascript">
+        function burstCache() {
+            if (!navigator.onLine) {
+                document.body.innerHTML = 'Offline Viewing not Allowed...pls be online.';
+                window.location = '~/ErrorPage.html';
+            }
+        }
+        function ShowSearchmaster(obj) {
+            document.getElementById('lightbookmaster').style.display = 'block';
+        }
+        function HideSearchmaster(obj) {
+            document.getElementById('lightbookmaster').style.display = 'none';
+        }
+        function checkscript() {
+            var evtobj = window.event ? event : e
+            if (evtobj.shiftKey) {
+                if (evtobj.keyCode == 188 || evtobj.keyCode == 190 || evtobj.keyCode == 222) {
+                    return false;
+                }
+            }
+        }
+    </script>
+      <script type="text/javascript">
+          // Broadcast that you're opening a page.
+          localStorage.openpages = Date.now();
+          var onLocalStorageEvent = function (e) {
+              if (e.key == "openpages") {
+                  // Listen if anybody else is opening the same page!
+                  localStorage.page_available = Date.now();
+              }
+              if (e.key == "page_available") {
+                  alert("Application is already running in another Tab.");
+                  open(location, '_self').close();
+                  close();
+              }
+          };
+          window.addEventListener('storage', onLocalStorageEvent, false);
+</script>
+    <script language="javascript" type="text/javascript">
+        var isClose = false;
+        //this code will handle the F5 or Ctrl+F5 key
+        //need to handle more cases like ctrl+R whose codes are not listed here
+        document.onkeydown = checkKeycode
+        function checkKeycode(e) {
+            var keycode;
+            if (window.event)
+                keycode = window.event.keyCode;
+            else if (e)
+                keycode = e.which;
+            if (keycode == 116) {
+                isClose = true;
+            }
+        }
+        function somefunction() {
+            isClose = true;
+        }
+
+        function bodyUnload() {
+
+            if (!isClose) {
+                var request = GetRequest();
+                request.open("GET", "~/Logout.aspx", true);
+                request.send();
+            }
+        }
+        function GetRequest() {
+            var request = null;
+            if (window.XMLHttpRequest) {
+                //incase of IE7,FF, Opera and Safari browser
+                request = new XMLHttpRequest();
+            }
+            else {
+                //for old browser like IE 6.x and IE 5.x
+                request = new ActiveXObject('MSXML2.XMLHTTP.3.0');
+            }
+            return request;
+        }
+    </script>
+
+    <script language="javascript" type='text/JavaScript'>
+        window.history.forward();
+        function noBack() {
+            burstCache();
+            window.history.forward();
+        }
+
+        function ResolveUrl(url) {
+            if (url.indexOf("~/") == 0) {
+                url = baseUrl + url.substring(2);
+            }
+            return url;
+        }
+
+        function checkhistory() {
+            debugger;
+            var baseUrl = "<%# ResolveUrl("~/InvalidAccess.aspx") %>";
+
+            if (window.history.length <= 0) {
+                window.location = baseUrl;
+                window.opener.location.reload();
+                window.history.forward();
+            }
+            if (document.referrer == null || document.referrer == "") {
+                window.location = baseUrl;
+            }
+        }
+    </script>
+    <link href="../include/bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="../include/bootstrap/font-awesome.min.css" rel="stylesheet" />
+
+    <style>
+        .modal-header {
+            background:#287b92;
+            background: linear-gradient(-45deg, #287b92, #0c3040, #287b92, #15425d);
+        } 
+        .modal-title {color:#fff;}
+        .modal {
+            top: 100px;
+        }
+        .modal-header .close {
+            position:static;
+        }
+    </style>
+</head>
+<%--onload="burstCache();" --%>
+<body class="backgroundmaster" onload="checkhistory();" onpageshow="if (event.persisted) noBack();" onkeydown="return checkscript();"
+    onbeforeunload="bodyUnload();" onmousedown="somefunction()">
+    <form id="form1" runat="server" autocomplete="off">
+        <div class="header">
+            <%--<div class="strip"></div>--%>
+            <div class="col-sm-6">
+                <h1 class="logo" style="background: transparent;"><a href="JavaScript:Void(0);">HPU</a></h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="glcl ">
+                    <ul class="nav navbar-nav navbar-right top-nav-right">
+
+                         <li><a  class="mainmenulink" href="#" data-toggle="modal" data-target="#notification"><i class="fa fa-bell-o" aria-hidden="true"></i>Notification & User Manual</a></li>
+                        <li id="modulediv" runat="server">
+                            <a class="mainmenulink" href="JavaScript:Void(0);">
+                                <% string mimg = Session["moduleimage"].ToString();%>
+                                <%--<img width="18px" height="18px" src='<%=Request.ApplicationPath%>/img/<%=Session["moduleimage"].ToString() %>' />--%>
+                                <img width="18px" height="18px" src='<%=Page.ResolveUrl("~/img/"+mimg+"")%>' />
+                                <%=Session["modulename"].ToString()%> 
+                            </a>
+                        </li>
+                        <%--<li>
+                            <a class="mainmenulink" href="JavaScript:Void(0);">
+                                <% string s = Session["cmodule"].ToString();
+                                   string ur = "";
+                                   if (s == "")
+                                   {
+                                       ur = "~/Modules.aspx";
+                                   }
+                                   else
+                                   {
+                                       ur = "~/UMM/Admin_Home.aspx?MID=" + s + "";
+                                   }
+                                %>
+                                <a href='<%=Page.ResolveUrl(""+ur+"")%>'>HOME</a> 
+                            </a>
+                        </li>--%>
+                         
+                        <li><a class="mainmenulink" href='<%=Page.ResolveUrl("~/Modules.aspx")%>'><i class="fa fa-th" aria-hidden="true"></i> My MODULES</a></li>
+
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="mainmenulink dropdown-toggle" href="#" aria-expanded="false">
+                                <%--<img alt="" src="images/2.png">--%>
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <span class="username">
+                                    <asp:Label ID="lblUserName" runat="server"></asp:Label>
+                                    <asp:Label ID="lblLoginName" runat="server"></asp:Label>
+                                </span>
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu extended logout">
+                                <li><a href="JavaScript:Void(0);"><i class="fa fa-fw fa-map-pin"></i>
+                                    <asp:Label ID="lblCampus" runat="server"></asp:Label>
+                                </a></li>
+                                <li><a href='<%=Page.ResolveUrl("~/UMM/ChangePassword.aspx")%>'><i class="fa fa-fw fa-key"></i> Change Password</a></li>
+                                <li><a href="JavaScript:Void(0);"><i class="fa fa-fw fa-clock-o"></i>
+                                    <asp:Label ID="lblCLogin" runat="server"></asp:Label></a> </li>
+                                <li><a href="JavaScript:Void(0);"><i class="fa fa-fw fa-clock-o"></i>
+                                    <asp:Label ID="lblPLogin" runat="server"></asp:Label></a> </li>
+                                <li><a href='#'><i class="fa fa-info-circle"></i> Help</a></li>
+                                <li><a href='<%=Page.ResolveUrl("~/Logout.aspx?State=Out")%>'><i class="fa fa-fw fa-sign-in"></i> Log Out</a></li>
+                            </ul>
+                        </li>
+                        <!-- <%--<asp:Label ID="lblDivision" runat="server"></asp:Label>--%>
+                       <%--<asp:Label ID="lblEmpName" runat="server"></asp:Label> --%> -->
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="">
+                <div class="maincontentinside">
+                    <div id="nav">
+                        <div class="nav-bg-fostrap">
+                            <div class="navbar-fostrap"><span></span><span></span><span></span></div>
+                        </div>
+                        <asp:Menu ID="MainMenu" runat="server" CssClass="nav-fostrap" Orientation="Horizontal" MaximumDynamicDisplayLevels="4"
+                            RenderingMode="List" StaticEnableDefaultPopOutImage="False" EnableViewState="False"
+                            DynamicPopOutImageUrl='~/Images/popout.jpg'>
+                            <DataBindings>
+                                <asp:MenuItemBinding DataMember="MenuItem" NavigateUrlField="NavigateUrl" TextField="Text"
+                                    ToolTipField="ToolTip" />
+                                <asp:MenuItemBinding />
+                            </DataBindings>
+                        </asp:Menu>
+                    </div>
+
+                    <div id="body">
+                        <div class="brdcums">
+                            <%--<marquee scrollamount="3" direction="left" loop="true">
+                                <font color="red"> Dear JNVU Members, thanks for using IUMS Application. For any query, please feel free to contact at 
+                                    computer cell between 11:00 AM to 05:00 PM Or Call us at : +91-7610874976</font></marquee>--%>
+                            <asp:Literal ID="lrtBC" runat="server"></asp:Literal>
+                            <%--<div class="helpbtn" id="hlpbtn">&nbsp;&nbsp;
+                                <asp:ImageButton ID="hplBtn" runat="server" ImageUrl="~/Images/help.png" Height="20px"
+                                    Width="20px" AlternateText="Click For Help" OnClick="hplBtn_Click" />
+                                </div>--%>
+                        </div>
+                        <div class="body-form">
+                            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                    </div>
+                    <asp:Label ID="lblCheck" runat="server" CssClass="HeadingRed"></asp:Label>
+                    <asp:XmlDataSource ID="XmlDataSource1" runat="server" EnableCaching="False" EnableViewState="False"
+                        TransformFile="~/UMM/TransformXSLT.xsl" XPath="MenuItems/MenuItem"></asp:XmlDataSource>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="loginfooter-lgn" style="position: static">
+            <a href="#">
+                <img src="<%=Page.ResolveUrl("~/App_Themes/skyblue/Images/manage-iti.png")%>" /></a>
+            <%--<img src="<%=Page.ResolveUrl("~/img/becil.png")%>" style="float: right; margin: -25px 10px 0 0;" />--%>
+            <img style="float: left; margin: -59px 1.5% 0 0;" src="<%=Page.ResolveUrl("~/Images/comodo_secure_113x59_transp.png")%>" />
+        </div>
+
+        <%-- <div id="lightbookmaster" class="grayout" style="display: none; top: 10%; height: auto;">
+        <div class="dvHelp">
+            <div onclick="document.getElementById('lightbookmaster').style.display='none';" class="closebtn">
+                X</div>
+            <div id="dvHelp" runat="server">
+                <div class="helpheading">
+                    Help</div>
+                <asp:Literal ID="ltrlHelp" runat="server"></asp:Literal>
+               The Context sensitive help will be activated  after final User Acceptance of respective IUMS Modules.
+            </div>
+        </div>
+    </div>--%>
+
+
+
+
+
+
+        <div id="notification" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><i class="fa fa-bell-o"></i>Instruction & Notification & User Manual</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form_ul">
+                            <ul>
+                                <Anthem:Repeater ID="rptNotietype" runat="server" AutoUpdateAfterCallBack="true" OnItemCommand="rptNotietype_ItemCommand" OnItemDataBound="rptNotietype_ItemDataBound" EnableCallBack="false">
+                                    <HeaderTemplate>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <li><em>Posted on: <span><%# Eval("sentdate")%></span></em>
+                                            <div class="clearfix"></div>
+                                            <a href="#"><i class="fa fa-fw fa-caret-right"></i><%# Eval("NoticSubject")%></a><br />
+                                            <%--<a href="CollegePortal/General_Inst_Not_Desc.aspx?id=<%# Eval("Pk_Noticid")%>" target="_blank"><i class="fa fa-fw fa-caret-right"></i><%# Eval("NoticSubject")%></a><br />--%>
+                                            <div class="clearfix"></div>
+                                            <span class="downloadicon" id="Downimg" runat="server"><i class="fa fa-fw fa-file-pdf-o"></i>
+                                                <Anthem:LinkButton ID="LnkBtnDownload" runat="server" Text='Download' CommandName="Page" Style="color: green;"
+                                                    EnableCallBack="false" AutoUpdateAfterCallBack="true" Font-Bold="true" CommandArgument='<%#Eval("Attachment")%>'>
+                                                </Anthem:LinkButton>
+                                            </span>
+                                        </li>
+                                    </ItemTemplate>
+                                    <FooterTemplate></FooterTemplate>
+                                </Anthem:Repeater>
+                                <asp:Literal ID="litPaging" runat="server" EnableViewState="False"></asp:Literal>
+                            </ul>
+                        </div>
+                        <%--<div class="view_all"><span><a href="CollegePortal/General_Inst_Notification.aspx?type=G&&Heading=General Instructions and Notification" target="_blank">View all Instructions and Notification >></a></span> </div>--%>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </form>
+</body>
+    <script src='<%=Page.ResolveUrl("~/include/jquery.3.7.1.min.js")%>' type="text/javascript"></script>
+<%--<script src='<%=Page.ResolveUrl("~/include/CommonJS.js")%>' type="text/javascript"></script>--%>
+<script src='<%=Page.ResolveUrl("~/include/krutiDev.js")%>' type="text/javascript"></script>
+<%--<script src='<%=Page.ResolveUrl("~/include/jquery.1.9.1.min.js")%>' type="text/javascript"></script>--%>
+<script src='<%=Page.ResolveUrl("~/include/bootstrap/bootstrap.js")%>' type="text/javascript"></script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    $(document).ready(function () {
+        $('.navbar-fostrap').click(function () {
+            $('.nav-fostrap').toggleClass('visible');
+        });
+    });
+    //jQuery.noConflict();
+    //jQuery(document).ready(function () {
+    //});
+</script>
+</html>
